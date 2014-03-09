@@ -1,42 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-</head> 
 <body>
 The genetic programming algorithm is looking for a  function which maps:<br>
 1, 2, 3, 4, 5<br>
 to<br>
 1, 4, 9, 16, 25<br>
 Good luck! And stay patient!<hr>
-<div id="generationField"></div>
-<div id="bestCodeField"></div>
+<p id="bestCodeField"></p>
 <script>
-var generationField = $('#generationField');
-var bestCodeField = $('#bestCodeField');
-
-var mutationRate=0.1;
-var crossoverRate=0.7;
-var codeSize=20;
-var populationSize=10;
 var generation=0;
-var best=9e300;
-
 var inp= [1, 2, 3, 4, 5];
 var out= [1, 4, 9, 16, 25];
-
 var ga;
-
 var codeBlocks=[
-    "",
-'a-- ;', 'b-- ;', 'c-- ;', 'd-- ;', 'e-- ;', 'f-- ;', 'g-- ;', 'h-- ;', 'i-- ;', 'j-- ;', 'k-- ;', 'l-- ;', 'm-- ;', 'n-- ;', 'o-- ;', 'p-- ;', 
-'a =a;', 'b =a;', 'c =a;', 'd =a;', 'e =a;', 'f =a;', 'g =a;', 'h =a;', 'i =a;', 'j =a;', 'k =a;', 'l =a;', 'm =a;', 'n =a;', 'o =a;', 'p =a;', 
-'a =a;', 'a =b;', 'a =c;', 'a =d;', 'a =e;', 'a =f;', 'a =g;', 'a =h;', 'a =i;', 'a =j;', 'a =k;', 'a =l;', 'a =m;', 'a =n;', 'a =o;', 'a =p;', 
-'a+=a;', 'a+=b;', 'a+=c;', 'a+=d;', 'a+=e;', 'a+=f;', 'a+=g;', 'a+=h;', 'a+=i;', 'a+=j;', 'a+=k;', 'a+=l;', 'a+=m;', 'a+=n;', 'a+=o;', 'a+=p;', 
-'a-=a;', 'a-=b;', 'a-=c;', 'a-=d;', 'a-=e;', 'a-=f;', 'a-=g;', 'a-=h;', 'a-=i;', 'a-=j;', 'a-=k;', 'a-=l;', 'a-=m;', 'a-=n;', 'a-=o;', 'a-=p;', 
-'a*=a;', 'a*=b;', 'a*=c;', 'a*=d;', 'a*=e;', 'a*=f;', 'a*=g;', 'a*=h;', 'a*=i;', 'a*=j;', 'a*=k;', 'a*=l;', 'a*=m;', 'a*=n;', 'a*=o;', 'a*=p;', 
-'a/=a;', 'a/=b;', 'a/=c;', 'a/=d;', 'a/=e;', 'a/=f;', 'a/=g;', 'a/=h;', 'a/=i;', 'a/=j;', 'a/=k;', 'a/=l;', 'a/=m;', 'a/=n;', 'a/=o;', 'a/=p;', 
-'a%=a;', 'a%=b;', 'a%=c;', 'a%=d;', 'a%=e;', 'a%=f;', 'a%=g;', 'a%=h;', 'a%=i;', 'a%=j;', 'a%=k;', 'a%=l;', 'a%=m;', 'a%=n;', 'a%=o;', 'a%=p;', 
+'', // Noop
+'a-- ;', 'b-- ;', 'c-- ;', 'd-- ;',  
+'a =a;', 'b =a;', 'c =a;', 'd =a;', 
+'a =a;', 'a =b;', 'a =c;', 'a =d;', 
+'a+=a;', 'a+=b;', 'a+=c;', 'a+=d;', 
+'a*=a;', 'a*=b;', 'a*=c;', 'a*=d;', 
+'a/=a;', 'a/=b;', 'a/=c;', 'a/=d;', 
+'a%=a;', 'a%=b;', 'a%=c;', 'a%=d;', 
 ];
     
 var population = new Array();
@@ -48,24 +32,18 @@ function rand(va) {
 function randomCode() {
     var code = {};
     code.list=new Array();
-    for (var i=0; i<codeSize; i++) {
+    for (var i=0; i<20; i++) {
         code.list[i]=rand(codeBlocks.length);
     }
     return code;
 }
 
 function defFooGA(code) {
-    var len=0;
-    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0; b=x; ";
+    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0; b=x; ";
     for (var i=0; i<code.list.length; i++) {
-        var block=code.list[i];
-        if (block>0) {
-            len++;
-            code.foo+=codeBlocks[block]+" ";
-        }
+        code.foo+=codeBlocks[code.list[i]];
     }
     code.foo+="return a;}";
-    code.len=len/code.list.length;
     eval(code.foo);
 }
     
@@ -81,20 +59,18 @@ function getFitness(code) {
             fitness+=(y1-y0)*(y1-y0);
         }
     }
-    code.fitness=fitness;//+code.len;
+    code.fitness=fitness;
     return fitness;
 }
 
 function mutate(code) {
-    if (Math.random()<mutationRate) {
-        var a=rand(code.list.length);
-        code.list[a]=rand(codeBlocks.length);
-    }
+    var a=rand(code.list.length);
+    code.list[a]=rand(codeBlocks.length);
 }
 
-function breadOne(target, parent1, parent2) {
+function crossover(target, parent1, parent2) {
     var a=rand(target.list.length);
-    for( var i=0, j=0; i<target.list.length; i++) {  
+    for(var i=0, j=0; i<target.list.length; i++) {  
         if (a+i<target.list.length) {
             target.list[i]=parent1.list[a+i];
         } else {
@@ -104,50 +80,36 @@ function breadOne(target, parent1, parent2) {
 }
 
 function testAll() {
-    for( var i=0; i<population.length; i++) {
+    for(var i=0; i<population.length; i++) {
         getFitness(population[i]);
     }
     population.sort(function(a,b){return a.fitness-b.fitness});
-	generationField.text(generation);
-    if (best>population[0].fitness) {
-        best=population[0].fitness;
-        var result="generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+";<br><br>result = {";
-        defFooGA(population[0]);
-        for(var i=0; i< inp.length; i++) {
-            var y1=ga(inp[i]);
-            result+=inp[i]+", "+y1+", //"+out[i]+",<br>"
-        }
-        result+="};<hr>";
-        
-        bestCodeField.prepend(result);
+    defFooGA(population[0]);
+    var result="generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+";<br><br>result = {";
+    for(var i=0; i< inp.length; i++) {
+        result+=inp[i]+", "+ga(inp[i])+", // "+out[i]+",<br>"
     }
+    document.getElementById('bestCodeField').innerHTML=result+"};<hr>"; 
 }
 
 function nextGeneration() {
-    for( var i=population.length-1; i>0; i--) {
-        breadOne(population[i], population[rand(i)], population[rand(i)]);
+    for(var i=population.length-1; i>0; i--) {
+        crossover(population[i], population[rand(i)], population[rand(i)]);
         mutate(population[i])
     }
 }
 
 function loopThruGenerations() {
     testAll();
-    if (population[0].fitness<0.5) return;
     generation++;
     nextGeneration();
-    setTimeout( loopThruGenerations, 10);
+    if (population[0].fitness>0.5) setTimeout( loopThruGenerations, 10);
 }
 
-function main() {
-    bestCodeField.append("hello2<br>");
-    generation=0;
-    for( var i=0; i<populationSize; i++) {
-        population[i] = randomCode();
-    }
-    loopThruGenerations();
+for(var i=0; i<10; i++) {
+    population[i] = randomCode();
 }
-
-main();
+loopThruGenerations();
 
 </script>
 </body>
