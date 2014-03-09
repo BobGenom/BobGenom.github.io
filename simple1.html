@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript” language=”javascript” src=”http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js”></script>
+<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head> 
 <body>
 <div id="generationField"></div>
@@ -19,10 +19,6 @@ var best=9e300;
 
 var inp= [1, 2, 3, 4, 5];
 var out= [1, 4, 9, 16, 25];
-for(var i=0; i<inp.length; i++) {
-    var x=inp[i];
-    out[i]=3*x*x*x+5*x-1
-}
 
 var ga;
 
@@ -107,10 +103,18 @@ function testAll() {
         getFitness(population[i]);
     }
     population.sort(function(a,b){return a.fitness-b.fitness});
-	//generationField.text(generation);
+	generationField.text(generation);
     if (best>population[0].fitness) {
         best=population[0].fitness;
-        bestCodeField.prepend("generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+"<hr>");
+        var result="generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+";<br><br>result = {";
+        defFooGA(population[0]);
+        for(var i=0; i< inp.length; i++) {
+            var y1=ga(inp[i]);
+            result+=inp[i]+", "+y1+", //"+out[i]+",<br>"
+        }
+        result+="};<hr>";
+        
+        bestCodeField.prepend(result);
     }
 }
 
