@@ -1,0 +1,137 @@
+//<div id="generationField"></div>
+//<div id="bestCodeField"></div>
+
+var generationField = $('#generationField');
+var bestCodeField = $('#bestCodeField');
+
+var mutationRate=0.1;
+var crossoverRate=0.7;
+var codeSize=20;
+var populationSize=10;
+var generation=0;
+var best=9e300;
+
+var inp= [1, 2, 3, 4, 5];
+var out= [1, 4, 9, 16, 25];
+for(var i=0; i<inp.length; i++) {
+    var x=inp[i];
+    out[i]=3*x*x*x+5*x-1
+}
+
+var ga;
+
+var codeBlocks=[
+    "",
+'a-- ;', 'b-- ;', 'c-- ;', 'd-- ;', 'e-- ;', 'f-- ;', 'g-- ;', 'h-- ;', 'i-- ;', 'j-- ;', 'k-- ;', 'l-- ;', 'm-- ;', 'n-- ;', 'o-- ;', 'p-- ;', 
+'a =a;', 'b =a;', 'c =a;', 'd =a;', 'e =a;', 'f =a;', 'g =a;', 'h =a;', 'i =a;', 'j =a;', 'k =a;', 'l =a;', 'm =a;', 'n =a;', 'o =a;', 'p =a;', 
+'a =a;', 'a =b;', 'a =c;', 'a =d;', 'a =e;', 'a =f;', 'a =g;', 'a =h;', 'a =i;', 'a =j;', 'a =k;', 'a =l;', 'a =m;', 'a =n;', 'a =o;', 'a =p;', 
+'a+=a;', 'a+=b;', 'a+=c;', 'a+=d;', 'a+=e;', 'a+=f;', 'a+=g;', 'a+=h;', 'a+=i;', 'a+=j;', 'a+=k;', 'a+=l;', 'a+=m;', 'a+=n;', 'a+=o;', 'a+=p;', 
+'a-=a;', 'a-=b;', 'a-=c;', 'a-=d;', 'a-=e;', 'a-=f;', 'a-=g;', 'a-=h;', 'a-=i;', 'a-=j;', 'a-=k;', 'a-=l;', 'a-=m;', 'a-=n;', 'a-=o;', 'a-=p;', 
+'a*=a;', 'a*=b;', 'a*=c;', 'a*=d;', 'a*=e;', 'a*=f;', 'a*=g;', 'a*=h;', 'a*=i;', 'a*=j;', 'a*=k;', 'a*=l;', 'a*=m;', 'a*=n;', 'a*=o;', 'a*=p;', 
+'a/=a;', 'a/=b;', 'a/=c;', 'a/=d;', 'a/=e;', 'a/=f;', 'a/=g;', 'a/=h;', 'a/=i;', 'a/=j;', 'a/=k;', 'a/=l;', 'a/=m;', 'a/=n;', 'a/=o;', 'a/=p;', 
+'a%=a;', 'a%=b;', 'a%=c;', 'a%=d;', 'a%=e;', 'a%=f;', 'a%=g;', 'a%=h;', 'a%=i;', 'a%=j;', 'a%=k;', 'a%=l;', 'a%=m;', 'a%=n;', 'a%=o;', 'a%=p;', 
+];
+    
+var population = new Array();
+
+function rand(va) {
+  return Math.floor(va*Math.random());
+}
+
+function randomCode() {
+    var code = {};
+    code.list=new Array();
+    for (var i=0; i<codeSize; i++) {
+        code.list[i]=rand(codeBlocks.length);
+    }
+    return code;
+}
+
+function defFooGA(code) {
+    var len=0;
+    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0; b=x; ";
+    for (var i=0; i<code.list.length; i++) {
+        var block=code.list[i];
+        if (block>0) {
+            len++;
+            code.foo+=codeBlocks[block]+" ";
+        }
+    }
+    code.foo+="return a;}";
+    code.len=len/code.list.length;
+    eval(code.foo);
+}
+    
+function getFitness(code) {
+    var fitness=0;
+    defFooGA(code);
+    for( var i=0; i< inp.length; i++) {
+        var y0=out[i];
+        var y1=ga(inp[i]);
+        if (isNaN(y1)) {
+            fitness+=1e100;
+        } else {
+            fitness+=(y1-y0)*(y1-y0);
+        }
+    }
+    code.fitness=fitness;//+code.len;
+    return fitness;
+}
+
+function mutate(code) {
+    if (Math.random()<mutationRate) {
+        var a=rand(code.list.length);
+        code.list[a]=rand(codeBlocks.length);
+    }
+}
+
+function breadOne(target, parent1, parent2) {
+    var a=rand(target.list.length);
+    for( var i=0, j=0; i<target.list.length; i++) {  
+        if (a+i<target.list.length) {
+            target.list[i]=parent1.list[a+i];
+        } else {
+            target.list[i]=parent2.list[j++];
+        } 
+    }
+}
+
+function testAll() {
+    for( var i=0; i<population.length; i++) {
+        getFitness(population[i]);
+    }
+    population.sort(function(a,b){return a.fitness-b.fitness});
+	//generationField.text(generation);
+    if (best>population[0].fitness) {
+        best=population[0].fitness;
+        bestCodeField.prepend("generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+"<hr>");
+    }
+}
+
+function nextGeneration() {
+    for( var i=population.length-1; i>0; i--) {
+        breadOne(population[i], population[rand(i)], population[rand(i)]);
+        mutate(population[i])
+    }
+}
+
+function loopThruGenerations() {
+    testAll();
+    if (population[0].fitness<0.5) return;
+    generation++;
+    nextGeneration();
+    setTimeout( loopThruGenerations, 10);
+}
+
+function main() {
+    bestCodeField.append("hello2<br>");
+    generation=0;
+    for( var i=0; i<populationSize; i++) {
+        population[i] = randomCode();
+    }
+    loopThruGenerations();
+}
+
+main();
+
+
