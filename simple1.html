@@ -2,70 +2,44 @@
 <html>
 <body>
 The genetic programming algorithm is looking for a  function which maps:<br>
-1, 2, 3, 4, 5<br>
+0, 1, 2, 3, 4, 5<br>
 to<br>
-1, 4, 9, 16, 25<br>
+1, 2, 5, 10, 17, 26<br>
 Good luck! And stay patient!<hr>
 <p id="bestCodeField"></p>
 <script>
 var generation=0;
-var inp= [1, 2, 3, 4, 5];
-var out= [1, 4, 9, 16, 25];
+var out= [1, 2, 5, 10, 17, 26];
 var ga;
-var codeBlocks=[
-'', // Noop
-'a-- ;', 'b-- ;', 'c-- ;', 'd-- ;',  
-'a =a;', 'b =a;', 'c =a;', 'd =a;', 
-'a =a;', 'a =b;', 'a =c;', 'a =d;', 
-'a+=a;', 'a+=b;', 'a+=c;', 'a+=d;', 
-'a*=a;', 'a*=b;', 'a*=c;', 'a*=d;', 
-'a/=a;', 'a/=b;', 'a/=c;', 'a/=d;', 
-'a%=a;', 'a%=b;', 'a%=c;', 'a%=d;', 
-];
-    
 var population = new Array();
+var codeBlocks=[
+'y++ ;', 'b++ ;', 'c++ ;', 'x++ ;',  
+         'b =y;', 'c =y;', 'x =y;', 
+         'y =b;', 'y =c;', 'y =x;', 
+'y+=y;', 'y+=b;', 'y+=c;', 'y+=x;', 
+'y*=y;', 'y*=b;', 'y*=c;', 'y*=x;', ];
 
 function rand(va) {
   return Math.floor(va*Math.random());
 }
 
-function randomCode() {
-    var code = {};
-    code.list=new Array();
-    for (var i=0; i<20; i++) {
-        code.list[i]=rand(codeBlocks.length);
-    }
-    return code;
-}
-
-function defFooGA(code) {
-    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0; b=x; ";
+function defineGAFunction(code) {
+    code.foo = "ga = function(x) {\n    var y=0, b=0, c=0;";
     for (var i=0; i<code.list.length; i++) {
         code.foo+=codeBlocks[code.list[i]];
     }
-    code.foo+="return a;}";
+    code.foo+="return y\n}";
     eval(code.foo);
 }
     
-function getFitness(code) {
-    var fitness=0;
-    defFooGA(code);
-    for( var i=0; i< inp.length; i++) {
+function calcFitness(code) {
+    code.fitness=0;
+    defineGAFunction(code);
+    for( var i=0; i<out.length; i++) {
         var y0=out[i];
-        var y1=ga(inp[i]);
-        if (isNaN(y1)) {
-            fitness+=1e100;
-        } else {
-            fitness+=(y1-y0)*(y1-y0);
-        }
+        var y1=ga(i);
+        code.fitness+=(y1-y0)*(y1-y0);
     }
-    code.fitness=fitness;
-    return fitness;
-}
-
-function mutate(code) {
-    var a=rand(code.list.length);
-    code.list[a]=rand(codeBlocks.length);
 }
 
 function crossover(target, parent1, parent2) {
@@ -79,38 +53,43 @@ function crossover(target, parent1, parent2) {
     }
 }
 
-function testAll() {
-    for(var i=0; i<population.length; i++) {
-        getFitness(population[i]);
-    }
-    population.sort(function(a,b){return a.fitness-b.fitness});
-    defFooGA(population[0]);
-    var result="generation="+generation+"<br>fitness="+population[0].fitness+"<br>"+population[0].foo.replace(/;/g,";<br>")+";<br><br>result = {";
-    for(var i=0; i< inp.length; i++) {
-        result+=inp[i]+", "+ga(inp[i])+", // "+out[i]+",<br>"
-    }
-    document.getElementById('bestCodeField').innerHTML=result+"};<hr>"; 
-}
-
-function nextGeneration() {
+function buildNextGeneration() {
     for(var i=population.length-1; i>0; i--) {
         crossover(population[i], population[rand(i)], population[rand(i)]);
-        mutate(population[i])
+        //mutate
+    	population[i].list[rand(population[i].list.length)]=rand(codeBlocks.length);
     }
 }
 
 function loopThruGenerations() {
-    testAll();
-    generation++;
-    nextGeneration();
-    if (population[0].fitness>0.5) setTimeout( loopThruGenerations, 10);
+    // calculate fitness for every program
+    for(var i=0; i<population.length; i++) {
+        calcFitness(population[i]);
+    }
+    population.sort(function(a,b){return a.fitness-b.fitness});
+
+    // show the best program
+    defineGAFunction(population[0]);
+    var result="<pre>generation = "+generation+"\nfitness = "+population[0].fitness+"\n"+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
+    for(var i=0; i<out.length; i++) {
+        result+="    "+i+", "+ga(i)+", //<==>// "+out[i]+"\n"
+    }
+    document.getElementById('bestCodeField').innerHTML=result+"];</pre><hr>"; 
+    if (population[0].fitness>0) {
+	    generation++;
+	    buildNextGeneration();
+    	setTimeout( loopThruGenerations, 10);
+    }
 }
 
 for(var i=0; i<10; i++) {
-    population[i] = randomCode();
+    population[i] = {};
+    population[i].list=new Array();
+    for (var j=0; j<20; j++) {
+        population[i].list[j]=rand(codeBlocks.length);
+    }
 }
 loopThruGenerations();
-
 </script>
 </body>
 </html>
