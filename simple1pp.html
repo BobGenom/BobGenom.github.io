@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<body>
+The genetic programming algorithm is looking for a short function which maps:<br>
+0, 1, 2, 3, 4, 5<br>
+to<br>
+1, 2, 5, 10, 17, 26<br>
+Good luck! And stay patient!<hr>
+<p id="bestCodeField"></p>
+<script>
+var generation=0;
+var out= [1, 2, 5, 10, 17, 26];
+var ga;
+var population = new Array();
+var codeBlocks=[
+'',
+'y++;', 'b++;', 'c++;', 'x++;',  
+         'b=y;', 'c=y;', 'x=y;', 
+         'y=b;', 'y=c;', 'y=x;', 
+'y+=y;', 'y+=b;', 'y+=c;', 'y+=x;', 
+'y*=y;', 'y*=b;', 'y*=c;', 'y*=x;'];
+
+function rand(va) {
+  return Math.floor(va*Math.random());
+}
+
+function defineGAFunction(code) {
+    code.foo = "ga = function(x) {\n    var y=0, b=0, c=0;";
+    for (var i=0; i<code.list.length; i++) {
+        code.foo+=codeBlocks[code.list[i]];
+    }
+    code.foo+="return y\n}";
+    eval(code.foo);
+}
+    
+function calcFitness(code) {
+    code.fitness=0;
+    defineGAFunction(code);
+    for( var i=0; i<out.length; i++) {
+        var y0=out[i];
+        var y1=ga(i);
+        code.fitness+=(y1-y0)*(y1-y0);
+    }
+    if (code.fitness>0) {
+    	code.fitness+=1;
+    } else {
+    	code.fitness=code.foo.length/(50+6*20.0);
+    }
+}
+
+function crossover(target, parent1, parent2) {
+    var a=rand(target.list.length);
+    for(var i=0, j=0; i<target.list.length; i++) {  
+        if (a+i<target.list.length) {
+            target.list[i]=parent1.list[a+i];
+        } else {
+            target.list[i]=parent2.list[j++];
+        } 
+    }
+}
+
+function buildNextGeneration() {
+    for(var i=population.length-1; i>0; i--) {
+        crossover(population[i], population[rand(i)], population[rand(i)]);
+        //mutate
+    	population[i].list[rand(population[i].list.length)]=rand(codeBlocks.length);
+    }
+}
+
+function loopThruGenerations() {
+    // calculate fitness for every program
+    for(var i=0; i<population.length; i++) {
+        calcFitness(population[i]);
+    }
+    population.sort(function(a,b){return a.fitness-b.fitness});
+
+    // show the best program
+    defineGAFunction(population[0]);
+    var result="<pre>generation = "+generation
+    	+"\nfitness = "+(population[0].fitness-(population[0].fitness>1?1:population[0].fitness))+(population[0].fitness>1?" + 1":" + "+population[0].fitness)+"\n"
+    	+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
+    for(var i=0; i<out.length; i++) {
+        result+="    "+i+", "+ga(i)+", //<==>// "+out[i]+"\n"
+    }
+    document.getElementById('bestCodeField').innerHTML=result+"];</pre><hr>"; 
+    if (population[0].fitness>=0.4) {
+	    generation++;
+	    buildNextGeneration();
+    	setTimeout( loopThruGenerations, 10);
+    }
+}
+
+for(var i=0; i<10; i++) {
+    population[i] = {};
+    population[i].list=new Array();
+    for (var j=0; j<20; j++) {
+        population[i].list[j]=rand(codeBlocks.length);
+    }
+}
+loopThruGenerations();
+</script>
+</body>
+</html>
+
