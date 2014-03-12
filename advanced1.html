@@ -88,12 +88,12 @@ Good luck! And stay patient!
     <label class="sheet-label" for="id-0" >Input Data</label>
     <div class="sheet" >
         <textarea id="inputField" cols="80" rows="35">
-1 1
-2 4
-3 9
-4 16
+1 2
+2 5
+3 10
+4 17
 7 50
-11 121</textarea>
+11 122</textarea>
     </div>
   </div>
   <div class="sheet-container">
@@ -101,6 +101,7 @@ Good luck! And stay patient!
     <label class="sheet-label" for="id-2" >Code Blocks</label>
     <div class="sheet" >
         <textarea id="codeBlocksField" cols="80" rows="35">
+ ; ; ; ; ; ;
 a++; b++; c++; d++; e++; f++; g++; h++; 
 a--; b--; c--; d--; e--; f--; g--; h--; 
 a=a; b=a; c=a; d=a; e=a; f=a; g=a; h=a; 
@@ -172,17 +173,11 @@ function initCode() {
 }
 
 function defFooGA(code) {
-    var len=0;
-    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0; b=x; ";
+    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;b=x;";
     for (var i=0; i<code.list.length; i++) {
-        var block=code.list[i];
-        if (codeBlocks[block].slice(0, 1) != "/") {
-            len++;
-            code.foo+=codeBlocks[block];
-        }
+        code.foo+=codeBlocks[code.list[i]];
     }
     code.foo+="return a\n}";
-    code.len=len/code.list.length;
     eval(code.foo);
 }
 
@@ -199,7 +194,7 @@ function calcFitness(code) {
         }
     }
     if (fitness<0.000001) {
-        fitness+=code.len;
+        fitness+=code.foo.length/(100+code.list.length*15);
     } else {
         fitness+=1;
     }
@@ -231,11 +226,6 @@ function crossover(idx) {
 }
 
 function showInfo() {
-    var t1=new Date().getTime();
-    generationField.text("generation = "+generation);
-    generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
-    generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
-
     if (best>population[0].fitness) {
         best=population[0].fitness;
         defFooGA(population[0]);
@@ -243,15 +233,20 @@ function showInfo() {
     		+"\nfitness = "+(population[0].fitness-(population[0].fitness>1?1:population[0].fitness))+(population[0].fitness>1?" + 1":" + "+population[0].fitness)+"\n"
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
     	for(var i=0; i<out.length; i++) {
-        	result+="    "+inp[i]+", "+ga(inp[i])+", //<==>// "+out[i]+"\n"
+    		var y1=ga(inp[i]);
+        	result+="    "+inp[i]+", "+y1+(y1==out[i]?", //==// ":", //!=// ")+out[i]+"\n"
     	}
         result+="];</pre><hr>";
         bestCodeField.prepend(result);
     }
+
+    var t1=new Date().getTime();
+    generationField.text("generation = "+generation);
+    generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
+    generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
 }
 
 function loopThruGenerations() {
-    showInfo();
     for(var chunk=0; chunk<100; chunk++) {
         // make the next generation.
         for( var i=population.length-1; i>=0; i--) {
@@ -265,7 +260,8 @@ function loopThruGenerations() {
         population.sort(function(a,b){return a.fitness-b.fitness});
         generation++;
     }
-    if (population[0].fitness>0.5 && run) setTimeout( loopThruGenerations, 20);
+    showInfo();
+    if (population[0].fitness>0.4 && run) setTimeout( loopThruGenerations, 20);
 }
 
 function stop() {
