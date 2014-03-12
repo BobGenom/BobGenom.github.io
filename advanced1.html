@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>genetic programming with Javascript</title>
+<style type="text/css">
+
+button {
+    font-size: large;
+    border-radius:5px 5px 5px 5px ;
+}
+
+#generationField {
+    color: red;
+    padding: 10px;
+}
+
+#bestCodeField {
+    overflow-x:visible;
+    overflow-y:inherit;
+}
+
+div.sheet {
+    display: none;
+}
+
+.tab {
+    padding-top: 10px;
+    height; 700px;
+ }
+
+.sheet-switch {
+    display: none;
+}
+
+.sheet-label {
+    font-size: large;
+    padding: 0px 3px 3px 3px;
+    border-radius:5px 5px 0px 0px ;
+    margin-right: 5px;
+    border-top: 1px solid lightgray;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+}
+
+.sheet-container {
+    float: left;
+}
+
+[type=radio]:checked ~ .sheet {
+    transition: Background 1s, height 1s;
+    position: absolute;
+    left: 10px;
+    height: 300px;
+    display: block;
+}
+
+/**
+ * Fast View
+ * Works for Firefox (only?)
+ */
+[type=radio]:hover ~ .sheet {
+    transition: Background 1s, height 1s;
+    position: absolute;
+    left: 10px;
+    height: 700px;
+    display: block;
+    background: linear-gradient(lightgray, #FFF);
+    z-index:15;
+}
+
+[type=radio]:checked ~ .sheet-label {
+    background: none repeat scroll 0 0 lightgray;
+}
+</style>
+<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<body>
+<button onclick="main()" id="startField">Start</button>
+<button id="stopField" onclick="stop()">Stop</button>
+<div id="generationField"></div>
+<div class="tab" >
+  <div class="sheet-container">
+    <input id="id-0" type="radio" class="sheet-switch" name="tabGroupA"/>
+    <label class="sheet-label" for="id-0" >Input Data</label>
+    <div class="sheet" >
+        <textarea id="inputField" cols="80" rows="35">
+1 1
+2 4
+3 9
+4 16
+5 25</textarea>
+    </div>
+  </div>
+  <div class="sheet-container">
+    <input id="id-2" type="radio" class="sheet-switch" name="tabGroupA" />
+    <label class="sheet-label" for="id-2" >Code Blocks</label>
+    <div class="sheet" >
+        <textarea id="codeBlocksField" cols="80" rows="35">
+// One code block per line. Make sure they all end with a semicolon ';'
+a-- ;
+b-- ;
+c-- ;
+d-- ;
+e-- ;
+f-- ;
+g-- ;
+h-- ;
+i-- ;
+j-- ;
+k-- ;
+l-- ;
+m-- ;
+n-- ;
+o-- ;
+p-- ;
+
+a =a;
+b =a;
+c =a;
+d =a;
+e =a;
+f =a;
+g =a;
+h =a;
+i =a;
+j =a;
+k =a;
+l =a;
+m =a;
+n =a;
+o =a;
+p =a;
+
+a =a;
+a =b;
+a =c;
+a =d;
+a =e;
+a =f;
+a =g;
+a =h;
+a =i;
+a =j;
+a =k;
+a =l;
+a =m;
+a =n;
+a =o;
+a =p;
+
+a+=a;
+a+=b;
+a+=c;
+a+=d;
+a+=e;
+a+=f;
+a+=g;
+a+=h;
+a+=i;
+a+=j;
+a+=k;
+a+=l;
+a+=m;
+a+=n;
+a+=o;
+a+=p;
+
+a-=a;
+a-=b;
+a-=c;
+a-=d;
+a-=e;
+a-=f;
+a-=g;
+a-=h;
+a-=i;
+a-=j;
+a-=k;
+a-=l;
+a-=m;
+a-=n;
+a-=o;
+a-=p;
+
+a*=a;
+a*=b;
+a*=c;
+a*=d;
+a*=e;
+a*=f;
+a*=g;
+a*=h;
+a*=i;
+a*=j;
+a*=k;
+a*=l;
+a*=m;
+a*=n;
+a*=o;
+a*=p;
+
+a/=a;
+a/=b;
+a/=c;
+a/=d;
+a/=e;
+a/=f;
+a/=g;
+a/=h;
+a/=i;
+a/=j;
+a/=k;
+a/=l;
+a/=m;
+a/=n;
+a/=o;
+a/=p;
+
+a%=a;
+a%=b;
+a%=c;
+a%=d;
+a%=e;
+a%=f;
+a%=g;
+a%=h;
+a%=i;
+a%=j;
+a%=k;
+a%=l;
+a%=m;
+a%=n;
+a%=o;
+a%=p;
+        </textarea>
+    </div>
+  </div>
+  <div class="sheet-container">
+    <input id="id-1" type="radio" class="sheet-switch" name="tabGroupA" checked="checked"/>
+    <label class="sheet-label" for="id-1" >Genetic Result</label>
+    <div class="sheet" >
+        <div id="bestCodeField"></div>
+    </div>
+  </div>
+</div>
+<script>
+var generationField = $('#generationField');
+var bestCodeField = $('#bestCodeField');
+var codeBlocksField = $('#codeBlocksField');
+
+var mutationRate=1;
+var crossoverRate=1;
+var codeSize=20;
+var populationSize=10;
+var generation=0;
+var individual=0;;
+var best;
+var timeStamp;
+var run=true;
+
+var inp = new Array();
+var out = new Array();
+var codeBlocks = new Array();
+var population = new Array();
+var ga;
+
+function rand(v) {
+  return Math.floor(v*Math.random());
+}
+
+function initCode() {
+    var code = {};
+    code.list=new Array();
+    for (var i=0; i<codeSize; i++) {
+        code.list[i]=rand(codeBlocks.length);
+    }
+    return code;
+}
+
+function defFooGA(code) {
+    var len=0;
+    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0; b=x; ";
+    for (var i=0; i<code.list.length; i++) {
+        var block=code.list[i];
+        if (codeBlocks[block].slice(0, 1) != "/") {
+            len++;
+            code.foo+=codeBlocks[block];
+        }
+    }
+    code.foo+="return a\n}";
+    code.len=len/code.list.length;
+    eval(code.foo);
+}
+
+function calcFitness(code) {
+    var fitness=0;
+    defFooGA(code);
+    for( var i=0; i< inp.length; i++) {
+        var y0=out[i];
+        var y1=ga(inp[i]);
+        if (isNaN(y1)) {
+            fitness+=1e100;
+        } else {
+            fitness+=(y1-y0)*(y1-y0);
+        }
+    }
+    if (fitness<0.000001) {
+        fitness+=code.len;
+    } else {
+        fitness+=1;
+    }
+    code.fitness=fitness;
+    return fitness;
+}
+
+function mutate(idx) {
+    if (Math.random()<mutationRate) {
+        var a=rand(population[idx].list.length);
+        population[idx].list[a]=rand(codeBlocks.length);
+    }
+}
+
+function crossover(idx) {
+    if (Math.random()<crossoverRate) {
+        var target=population[idx];
+        var parent1=population[rand(idx)];
+        var parent2=population[rand(idx)]
+        var a=rand(target.list.length);
+        for( var i=0, j=0; i<target.list.length; i++) {
+            if (a+i<target.list.length) {
+                target.list[i]=parent1.list[a+i];
+            } else {
+                target.list[i]=parent2.list[j++];
+            }
+        }
+    }
+}
+
+function showInfo() {
+    var t1=new Date().getTime();
+    generationField.text("generation = "+generation);
+    generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
+    generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
+
+    if (best>population[0].fitness) {
+        best=population[0].fitness;
+        defFooGA(population[0]);
+	    var result="<pre>individual = "+population[0].id
+    		+"\nfitness = "+(population[0].fitness-(population[0].fitness>1?1:population[0].fitness))+(population[0].fitness>1?" + 1":" + "+population[0].fitness)+"\n"
+    		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
+    	for(var i=0; i<out.length; i++) {
+        	result+="    "+inp[i]+", "+ga(inp[i])+", //<==>// "+out[i]+"\n"
+    	}
+        result+="];</pre><hr>";
+        bestCodeField.prepend(result);
+    }
+}
+
+function loopThruGenerations() {
+    showInfo();
+    for(var chunk=0; chunk<1000; chunk++) {
+        // make the next generation.
+        for( var i=population.length-1; i>=0; i--) {
+            crossover(i);
+            mutate(i);
+            population[i].id=individual++;
+        }
+        for( var i=0; i<population.length; i++) {
+            calcFitness(population[i]);
+        }
+        population.sort(function(a,b){return a.fitness-b.fitness});
+        generation++;
+    }
+    if (population[0].fitness>0.5 && run) setTimeout( loopThruGenerations, 0);
+}
+
+function stop() {
+    run=false;
+}
+
+function main() {
+    run=true;
+    codeBlocks = codeBlocksField.text().split("\n");
+    var data = $('#inputField').text().split("\n");
+	inp = new Array();
+	out = new Array();
+    for(var i=0; i< data.length; i++) {
+        var line=data[i].split(/[\s;,]+/g);
+        inp[i]=line[0]-0;
+        out[i]=line[line.length-1]-0;
+    }
+    bestCodeField.append("start<br>");
+    generation=0;
+    individual=0;
+    best=9e300;
+    timeStamp=new Date().getTime();
+    for( var i=0; i<populationSize; i++) {
+        population[i] = initCode();
+        population[i].id=individual++;
+    }
+    loopThruGenerations();
+}
+
+main();
+</script>
+</body>
+</html>
