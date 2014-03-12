@@ -75,9 +75,13 @@ div.sheet {
 <script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
+The genetic programming algorithm is looking for a function for your "Input Data".<br>
+Good luck! And stay patient!
+<hr>
 <button onclick="main()" id="startField">Start</button>
 <button id="stopField" onclick="stop()">Stop</button>
 <div id="generationField"></div>
+<hr>
 <div class="tab" >
   <div class="sheet-container">
     <input id="id-0" type="radio" class="sheet-switch" name="tabGroupA"/>
@@ -88,7 +92,8 @@ div.sheet {
 2 4
 3 9
 4 16
-5 25</textarea>
+7 50
+11 121</textarea>
     </div>
   </div>
   <div class="sheet-container">
@@ -96,142 +101,32 @@ div.sheet {
     <label class="sheet-label" for="id-2" >Code Blocks</label>
     <div class="sheet" >
         <textarea id="codeBlocksField" cols="80" rows="35">
-// One code block per line. Make sure they all end with a semicolon ';'
-a-- ;
-b-- ;
-c-- ;
-d-- ;
-e-- ;
-f-- ;
-g-- ;
-h-- ;
-i-- ;
-j-- ;
-k-- ;
-l-- ;
-m-- ;
-n-- ;
-o-- ;
-p-- ;
-
-a =a;
-b =a;
-c =a;
-d =a;
-e =a;
-f =a;
-g =a;
-h =a;
-i =a;
-j =a;
-k =a;
-l =a;
-m =a;
-n =a;
-o =a;
-p =a;
-
-a =a;
-a =b;
-a =c;
-a =d;
-a =e;
-a =f;
-a =g;
-a =h;
-a =i;
-a =j;
-a =k;
-a =l;
-a =m;
-a =n;
-a =o;
-a =p;
-
-a+=a;
-a+=b;
-a+=c;
-a+=d;
-a+=e;
-a+=f;
-a+=g;
-a+=h;
-a+=i;
-a+=j;
-a+=k;
-a+=l;
-a+=m;
-a+=n;
-a+=o;
-a+=p;
-
-a-=a;
-a-=b;
-a-=c;
-a-=d;
-a-=e;
-a-=f;
-a-=g;
-a-=h;
-a-=i;
-a-=j;
-a-=k;
-a-=l;
-a-=m;
-a-=n;
-a-=o;
-a-=p;
-
-a*=a;
-a*=b;
-a*=c;
-a*=d;
-a*=e;
-a*=f;
-a*=g;
-a*=h;
-a*=i;
-a*=j;
-a*=k;
-a*=l;
-a*=m;
-a*=n;
-a*=o;
-a*=p;
-
-a/=a;
-a/=b;
-a/=c;
-a/=d;
-a/=e;
-a/=f;
-a/=g;
-a/=h;
-a/=i;
-a/=j;
-a/=k;
-a/=l;
-a/=m;
-a/=n;
-a/=o;
-a/=p;
-
-a%=a;
-a%=b;
-a%=c;
-a%=d;
-a%=e;
-a%=f;
-a%=g;
-a%=h;
-a%=i;
-a%=j;
-a%=k;
-a%=l;
-a%=m;
-a%=n;
-a%=o;
-a%=p;
+a++; b++; c++; d++; e++; f++; g++; h++; 
+a--; b--; c--; d--; e--; f--; g--; h--; 
+a=a; b=a; c=a; d=a; e=a; f=a; g=a; h=a; 
+a=a; a=b; a=c; a=d; a=e; a=f; a=g; a=h; 
+a+=a; a+=b; a+=c; a+=d; a+=e; a+=f; a+=g; a+=h; 
+a-=a; a-=b; a-=c; a-=d; a-=e; a-=f; a-=g; a-=h; 
+a*=a; a*=b; a*=c; a*=d; a*=e; a*=f; a*=g; a*=h; 
+a/=a; a/=b; a/=c; a/=d; a/=e; a/=f; a/=g; a/=h; 
+a%=a; a%=b; a%=c; a%=d; a%=e; a%=f; a%=g; a%=h; 
+a=Math.abs(a); a=Math.abs(b); a=Math.abs(c); a=Math.abs(d); a=Math.abs(e); a=Math.abs(f); a=Math.abs(g); a=Math.abs(h); 
+a=Math.acos(a); a=Math.acos(b); a=Math.acos(c); a=Math.acos(d); a=Math.acos(e); a=Math.acos(f); a=Math.acos(g); a=Math.acos(h); 
+a=Math.asin(a); a=Math.asin(b); a=Math.asin(c); a=Math.asin(d); a=Math.asin(e); a=Math.asin(f); a=Math.asin(g); a=Math.asin(h); 
+a=Math.atan(a); a=Math.atan(b); a=Math.atan(c); a=Math.atan(d); a=Math.atan(e); a=Math.atan(f); a=Math.atan(g); a=Math.atan(h); 
+a=Math.ceil(a); a=Math.ceil(b); a=Math.ceil(c); a=Math.ceil(d); a=Math.ceil(e); a=Math.ceil(f); a=Math.ceil(g); a=Math.ceil(h); 
+a=Math.cos(a); a=Math.cos(b); a=Math.cos(c); a=Math.cos(d); a=Math.cos(e); a=Math.cos(f); a=Math.cos(g); a=Math.cos(h); 
+a=Math.exp(a); a=Math.exp(b); a=Math.exp(c); a=Math.exp(d); a=Math.exp(e); a=Math.exp(f); a=Math.exp(g); a=Math.exp(h); 
+a=Math.floor(a); a=Math.floor(b); a=Math.floor(c); a=Math.floor(d); a=Math.floor(e); a=Math.floor(f); a=Math.floor(g); a=Math.floor(h); 
+a=Math.log(a); a=Math.log(b); a=Math.log(c); a=Math.log(d); a=Math.log(e); a=Math.log(f); a=Math.log(g); a=Math.log(h); 
+a=Math.max(a,a); a=Math.max(a,b); a=Math.max(a,c); a=Math.max(a,d); a=Math.max(a,e); a=Math.max(a,f); a=Math.max(a,g); a=Math.max(a,h); 
+a=Math.min(a,a); a=Math.min(a,b); a=Math.min(a,c); a=Math.min(a,d); a=Math.min(a,e); a=Math.min(a,f); a=Math.min(a,g); a=Math.min(a,h); 
+a=Math.pow(a,a); a=Math.pow(a,b); a=Math.pow(a,c); a=Math.pow(a,d); a=Math.pow(a,e); a=Math.pow(a,f); a=Math.pow(a,g); a=Math.pow(a,h); 
+a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); 
+a=Math.round(a); a=Math.round(b); a=Math.round(c); a=Math.round(d); a=Math.round(e); a=Math.round(f); a=Math.round(g); a=Math.round(h); 
+a=Math.sin(a); a=Math.sin(b); a=Math.sin(c); a=Math.sin(d); a=Math.sin(e); a=Math.sin(f); a=Math.sin(g); a=Math.sin(h); 
+a=Math.sqrt(a); a=Math.sqrt(b); a=Math.sqrt(c); a=Math.sqrt(d); a=Math.sqrt(e); a=Math.sqrt(f); a=Math.sqrt(g); a=Math.sqrt(h); 
+a=Math.tan(a); a=Math.tan(b); a=Math.tan(c); a=Math.tan(d); a=Math.tan(e); a=Math.tan(f); a=Math.tan(g); a=Math.tan(h); 
         </textarea>
     </div>
   </div>
@@ -246,7 +141,6 @@ a%=p;
 <script>
 var generationField = $('#generationField');
 var bestCodeField = $('#bestCodeField');
-var codeBlocksField = $('#codeBlocksField');
 
 var mutationRate=1;
 var crossoverRate=1;
@@ -380,8 +274,11 @@ function stop() {
 
 function main() {
     run=true;
-    codeBlocks = codeBlocksField.text().split("\n");
-    var data = $('#inputField').text().split("\n");
+    codeBlocks = $('#codeBlocksField').val().split(/;\s*/g);
+    for(var i=0; i< codeBlocks.length; i++) {
+        codeBlocks[i]+=";";
+    }
+    var data = $('#inputField').val().split("\n");
 	inp = new Array();
 	out = new Array();
     for(var i=0; i< data.length; i++) {
