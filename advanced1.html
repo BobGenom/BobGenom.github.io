@@ -144,7 +144,7 @@ var generationField = $('#generationField');
 var bestCodeField = $('#bestCodeField');
 
 var mutationRate=1;
-var crossoverRate=1;
+var crossoverRate=0.5;
 var codeSize=20;
 var populationSize=10;
 var generation=0;
@@ -234,7 +234,7 @@ function showInfo() {
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
     	for(var i=0; i<out.length; i++) {
     		var y1=ga(inp[i]);
-        	result+="    "+inp[i]+", "+y1+(y1==out[i]?", //==// ":", //!=// ")+out[i]+"\n"
+        	result+="    "+inp[i]+", "+y1+(y1==out[i]?", // == // ":", // != // ")+out[i]+"\n"
     	}
         result+="];</pre><hr>";
         bestCodeField.prepend(result);

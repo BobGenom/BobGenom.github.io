@@ -72,7 +72,7 @@ function loopThruGenerations() {
     defineGAFunction(population[0]);
     var result="<pre>generation = "+generation+"\nfitness = "+population[0].fitness+"\n"+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
     for(var i=0; i<out.length; i++) {
-        result+="    "+i+", "+ga(i)+", //==// "+out[i]+"\n"
+        result+="    "+i+", "+ga(i)+", // == // "+out[i]+"\n"
     }
     document.getElementById('bestCodeField').innerHTML=result+"];</pre><hr>"; 
     if (population[0].fitness>0) {
