@@ -75,7 +75,7 @@ div.sheet {
 <script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
-The genetic programming algorithm is looking for a function for your "Input Data".<br>
+The Blind Codemaker is searching for a function for your "Input Data".<br>
 Good luck! And stay patient!
 <hr>
 <button onclick="main()" id="startField">Start</button>
@@ -203,24 +203,20 @@ function calcFitness(code) {
 }
 
 function mutate(idx) {
-    if (Math.random()<mutationRate) {
-        var a=rand(population[idx].list.length);
-        population[idx].list[a]=rand(codeBlocks.length);
-    }
+    var a=rand(population[idx].list.length);
+    population[idx].list[a]=rand(codeBlocks.length);
 }
 
 function crossover(idx) {
-    if (Math.random()<crossoverRate) {
-        var target=population[idx];
-        var parent1=population[rand(idx)];
-        var parent2=population[rand(idx)]
-        var a=rand(target.list.length);
-        for( var i=0, j=0; i<target.list.length; i++) {
-            if (a+i<target.list.length) {
-                target.list[i]=parent1.list[a+i];
-            } else {
-                target.list[i]=parent2.list[j++];
-            }
+    var target=population[idx];
+    var parent1=population[rand(idx)];
+    var parent2=population[rand(idx)]
+    var a=rand(target.list.length);
+    for( var i=0, j=0; i<target.list.length; i++) {
+        if (a+i<target.list.length) {
+            target.list[i]=parent1.list[a+i];
+        } else {
+            target.list[i]=parent2.list[j++];
         }
     }
 }
@@ -241,7 +237,8 @@ function showInfo() {
     }
 
     var t1=new Date().getTime();
-    generationField.text("generation = "+generation);
+    generationField.text("generations = "+generation);
+    generationField.append("<br>individuals = "+individual);
     generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
     generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
 }
@@ -249,9 +246,12 @@ function showInfo() {
 function loopThruGenerations() {
     for(var chunk=0; chunk<100; chunk++) {
         // make the next generation.
-        for( var i=population.length-1; i>=0; i--) {
-            crossover(i);
-            mutate(i);
+        for( var i=population.length-1; i>0; i--) {
+		    if (Math.random()<crossoverRate) {
+	            crossover(i);
+    		} else {
+	            mutate(i);
+    		}
             population[i].id=individual++;
         }
         for( var i=0; i<population.length; i++) {
@@ -261,7 +261,7 @@ function loopThruGenerations() {
         generation++;
     }
     showInfo();
-    if (population[0].fitness>0.4 && run) setTimeout( loopThruGenerations, 20);
+    if (population[0].fitness>0.33 && run) setTimeout( loopThruGenerations, 20);
 }
 
 function stop() {
@@ -272,7 +272,7 @@ function main() {
     run=true;
     codeBlocks = $('#codeBlocksField').val().split(/;\s*/g);
     for(var i=0; i< codeBlocks.length; i++) {
-        codeBlocks[i]+=";";
+        if (codeBlocks[i].length>0) codeBlocks[i]+=";";
     }
     var data = $('#inputField').val().split("\n");
 	inp = new Array();
