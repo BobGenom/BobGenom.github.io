@@ -25,7 +25,7 @@ div.sheet {
 
 .tab {
     padding-top: 10px;
-    height; 700px;
+    height: 700px;
  }
 
 .sheet-switch {
@@ -78,7 +78,7 @@ div.sheet {
 The Blind Codemaker is searching for a function for your "Input Data".<br>
 Good luck! And stay patient!
 <hr>
-<button onclick="main()" id="startField">Start</button>
+<button onclick="main()" id="startField">Start/Restart</button>
 <button id="stopField" onclick="stop()">Stop</button>
 <div id="generationField"></div>
 <hr>
@@ -87,7 +87,7 @@ Good luck! And stay patient!
     <input id="id-0" type="radio" class="sheet-switch" name="tabGroupA"/>
     <label class="sheet-label" for="id-0" >Input Data</label>
     <div class="sheet" >
-        <textarea id="inputField" cols="80" rows="35">
+        <textarea id="inputField" cols="80" rows="35" wrap="soft">
 1 2
 2 5
 3 10
@@ -100,7 +100,7 @@ Good luck! And stay patient!
     <input id="id-2" type="radio" class="sheet-switch" name="tabGroupA" />
     <label class="sheet-label" for="id-2" >Code Blocks</label>
     <div class="sheet" >
-        <textarea id="codeBlocksField" cols="80" rows="35">
+        <textarea id="codeBlocksField" cols="80" rows="35" wrap="soft">
  ; ; ; ; ; ;
 a++; b++; c++; d++; e++; f++; g++; h++; 
 a--; b--; c--; d--; e--; f--; g--; h--; 
@@ -143,10 +143,10 @@ a=Math.tan(a); a=Math.tan(b); a=Math.tan(c); a=Math.tan(d); a=Math.tan(e); a=Mat
 var generationField = $('#generationField');
 var bestCodeField = $('#bestCodeField');
 
-var mutationRate=1;
-var crossoverRate=0.5;
-var codeSize=100;
-var populationSize=10;
+var mutationRate=0.7;
+var crossoverRate=0.2;
+var codeSize=50;
+var populationSize=100;
 var generation=0;
 var individual=0;;
 var best;
@@ -207,9 +207,8 @@ function mutate(idx) {
     population[idx].list[a]=rand(codeBlocks.length);
 }
 
-function crossover(idx) {
+function crossover(idx, parent1) {
     var target=population[idx];
-    var parent1=population[rand(idx)];
     var parent2=population[rand(idx)]
     var a=rand(target.list.length);
     for( var i=0, j=0; i<target.list.length; i++) {
@@ -241,21 +240,32 @@ function showInfo() {
     generationField.append("<br>individuals = "+individual);
     generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
     generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
+    generationField.append("<br>currentFitness = "+(population[0].fitness>1?population[0].fitness-1:0)+" + "+(population[0].fitness>1?1:population[0].fitness));
 }
 
 function loopThruGenerations() {
-    for(var chunk=0; chunk<100; chunk++) {
+    for(var chunk=0; chunk<10; chunk++) {
         // make the next generation.
-        for( var i=population.length-1; i>0; i--) {
+        for(var i=population.length-1; i>=0; i--) {
+        	var changed=0;
+    		var parent1=population[rand(i)];
+		    for( var j=0; j<parent1.list.length; j++) {
+	            population[i].list[j]=parent1.list[j];
+		    }
+		    population[i].fitness=parent1.fitness;
+		    population[i].foo=parent1.foo;
 		    if (Math.random()<crossoverRate) {
-	            crossover(i);
-    		} else {
-	            mutate(i);
+	            crossover(i, parent1);
+	            changed=1;
     		}
-            population[i].id=individual++;
-        }
-        for( var i=0; i<population.length; i++) {
-            calcFitness(population[i]);
+		    if (Math.random()<mutationRate) {
+	            mutate(i);
+	            changed=1;
+    		}
+    		if (changed) {
+	            calcFitness(population[i]);
+    			population[i].id=individual++;
+    		}
         }
         population.sort(function(a,b){return a.fitness-b.fitness});
         generation++;
