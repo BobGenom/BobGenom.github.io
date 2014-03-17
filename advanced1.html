@@ -75,8 +75,9 @@ div.sheet {
 <script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
-<h2>The Blind Codemaker</h2>is searching for a function for your "Input Data".<br>
-Good luck! And stay patient!
+<h2>The Blind Codemaker</h2>
+is searching for a function for your "Input Data".<br>
+<h2>Good luck! And stay patient!</h2>
 <hr>
 <button onclick="main()" id="startField">Start/Restart</button>
 <button id="stopField" onclick="stop()">Stop</button>
@@ -167,23 +168,17 @@ function initCode() {
     var code = {};
     code.list=new Array();
     for (var i=0; i<codeSize; i++) {
-        code.list[i]=rand(codeBlocks.length);
+        code.list[i]=codeBlocks[rand(codeBlocks.length)];
     }
     return code;
 }
 
-function defFooGA(code) {
-    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;b=x;";
-    for (var i=0; i<code.list.length; i++) {
-        code.foo+=codeBlocks[code.list[i]];
-    }
-    code.foo+="return a\n}";
-    eval(code.foo);
-}
-
 function calcFitness(code) {
     var fitness=0;
-    defFooGA(code);
+    code.foo = "ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;b=x;"
+    	+code.list.join('')
+    	+"return a\n}";
+    eval(code.foo);
     for( var i=0; i< inp.length; i++) {
         var y0=out[i];
         var y1=ga(inp[i]);
@@ -199,12 +194,11 @@ function calcFitness(code) {
         fitness+=1;
     }
     code.fitness=fitness;
-    return fitness;
 }
 
-function mutate(idx) {
-    var a=rand(population[idx].list.length);
-    population[idx].list[a]=rand(codeBlocks.length);
+function mutate(target) {
+    var a=rand(target.list.length);
+    target.list[a]=codeBlocks[rand(codeBlocks.length)];
 }
 
 function crossover(idx, parent1) {
@@ -220,12 +214,16 @@ function crossover(idx, parent1) {
     }
 }
 
+function parsimonyToString(val) {
+	return (val>1?val-1:0)+" + "+(val>1?1:val);
+}
+
 function showInfo() {
     if (best>population[0].fitness) {
         best=population[0].fitness;
-        defFooGA(population[0]);
+        calcFitness(population[0]);
 	    var result="<pre>individual = "+population[0].id
-    		+"\nfitness = "+(population[0].fitness-(population[0].fitness>1?1:population[0].fitness))+(population[0].fitness>1?" + 1":" + "+population[0].fitness)+"\n"
+    		+"\nfitness = "+parsimonyToString(population[0].fitness)+"\n"
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
     	for(var i=0; i<out.length; i++) {
     		var y1=ga(inp[i]);
@@ -239,8 +237,8 @@ function showInfo() {
     generationField.text("generations = "+generation);
     generationField.append("<br>individuals = "+individual);
     generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
-    generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
-    generationField.append("<br>currentFitness = "+(population[0].fitness>1?population[0].fitness-1:0)+" + "+(population[0].fitness>1?1:population[0].fitness));
+    generationField.append("<br>bestFitness = "+parsimonyToString(best));
+    generationField.append("<br>currentFitness = "+parsimonyToString(population[0].fitness));
 }
 
 function loopThruGenerations() {
@@ -248,27 +246,31 @@ function loopThruGenerations() {
         // make the next generation.
         for(var i=population.length-1; i>=0; i--) {
         	var changed=0;
+    		var target=population[i];
     		var parent1=population[rand(i)];
 		    for( var j=0; j<parent1.list.length; j++) {
-	            population[i].list[j]=parent1.list[j];
+	            target.list[j]=parent1.list[j];
 		    }
-		    population[i].fitness=parent1.fitness;
-		    population[i].foo=parent1.foo;
 		    if (Math.random()<crossoverRate) {
 	            crossover(i, parent1);
 	            changed=1;
     		}
 		    if (Math.random()<mutationRate) {
-	            mutate(i);
+	            mutate(target);
 	            changed=1;
     		}
     		if (changed) {
-	            calcFitness(population[i]);
-    			population[i].id=individual++;
+	            calcFitness(target);
+    			target.id=individual++;
+    		} else {
+			    target.fitness=parent1.fitness;
     		}
         }
         population.sort(function(a,b){return a.fitness-b.fitness});
         generation++;
+	    if (best>population[0].fitness) {
+		    showInfo();
+	    }
     }
     showInfo();
     if (population[0].fitness>0.152 && run) setTimeout( loopThruGenerations, 20);
