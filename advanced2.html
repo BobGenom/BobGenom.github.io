@@ -101,7 +101,7 @@ is searching for a function for your "Input Data".<br>
     <input id="id-2" type="radio" class="sheet-switch" name="tabGroupA" />
     <label class="sheet-label" for="id-2" >Code Blocks</label>
     <div class="sheet" >
-        <textarea id="codeBlocksField" cols="80" rows="35" wrap="soft">
+        <textarea id="codeBlocksField" wrap="off" cols="80" rows="35">
  ; ; ; ; ; ;
 a++; b++; c++; d++; e++; f++; g++; h++; 
 a--; b--; c--; d--; e--; f--; g--; h--; 
@@ -179,13 +179,15 @@ function calcFitness(code) {
     	+"return a\n}";
     eval(code.foo);
     for(var i=0; i< foo.length; i+=(fitness<=best?1:2)) {
-        var y0=foo[i].y;
-        var y1=code.ga(foo[i].x);
+    	var f=foo[i];
+        var y0=f.y;
+        var y1=code.ga(f.x);
         if (isNaN(y1)) {
-            fitness+=1e100;
+            f.fitness=1e100;
         } else {
-            fitness+=(y1-y0)*(y1-y0);
+            f.fitness=(y1-y0)*(y1-y0);
         }
+        fitness+=f.fitness;
     }
     if (fitness<0.000001) {
         fitness+=code.foo.length/(100+code.list.length*15);
@@ -221,6 +223,7 @@ function showInfo() {
     if (best>population[0].fitness) {
         best=population[0].fitness;
         calcFitness(population[0]);
+        foo.sort(function(a,b){return a.seq-b.seq});
 	    var result="<pre>individual = "+population[0].id
     		+"\nfitness = "+parsimonyToString(population[0].fitness)+"\n"
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
@@ -273,6 +276,8 @@ function loopThruGenerations() {
     		}
         }
         population.sort(function(a,b){return a.fitness-b.fitness});
+        calcFitness(population[0]);
+        foo.sort(function(a,b){return b.fitness-a.fitness});
         generation++;
 	    if (best>population[0].fitness) {
 		    showInfo();
