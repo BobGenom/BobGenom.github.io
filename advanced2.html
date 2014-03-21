@@ -178,7 +178,8 @@ function calcFitness(code) {
     	+code.list.join('')
     	+"return a\n}";
     eval(code.foo);
-    for(var i=0; i< foo.length; i+=(fitness<=best?1:2)) {
+    var s=1;
+    for(var i=0; i< foo.length; i+=s) {
     	var f=foo[i];
         var y0=f.y;
         var y1=code.ga(f.x);
@@ -187,7 +188,13 @@ function calcFitness(code) {
         } else {
             f.fitness=(y1-y0)*(y1-y0);
         }
-        fitness+=f.fitness;
+        if (fitness<=best) {
+	        fitness+=f.fitness;
+        } else {
+        	s=3;
+	        fitness+=s*f.fitness;
+        }
+        
     }
     if (fitness<0.000001) {
         fitness+=code.foo.length/(100+code.list.length*15);
@@ -276,7 +283,10 @@ function loopThruGenerations() {
     		}
         }
         population.sort(function(a,b){return a.fitness-b.fitness});
+        var save=best;
+	    best=9e300;
         calcFitness(population[0]);
+	    best=save;
         foo.sort(function(a,b){return b.fitness-a.fitness});
         generation++;
 	    if (best>population[0].fitness) {
