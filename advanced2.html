@@ -154,8 +154,7 @@ var best;
 var timeStamp;
 var run=true;
 
-var inp = new Array();
-var out = new Array();
+var foo = new Array();
 var codeBlocks = new Array();
 var population = new Array();
 var ga;
@@ -179,9 +178,9 @@ function calcFitness(code) {
     	+code.list.join('')
     	+"return a\n}";
     eval(code.foo);
-    for( var i=0; i< inp.length; i++) {
-        var y0=out[i];
-        var y1=code.ga(inp[i]);
+    for(var i=0; i< foo.length; i+=(fitness<=best?1:2)) {
+        var y0=foo[i].y;
+        var y1=code.ga(foo[i].x);
         if (isNaN(y1)) {
             fitness+=1e100;
         } else {
@@ -225,12 +224,19 @@ function showInfo() {
 	    var result="<pre>individual = "+population[0].id
     		+"\nfitness = "+parsimonyToString(population[0].fitness)+"\n"
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
-    	for(var i=0; i<out.length; i++) {
-    		var y1=population[0].ga(inp[i]);
-        	result+="    "+inp[i]+", "+y1+(y1==out[i]?", // == // ":", // != // ")+out[i]+"\n"
+    	for(var i=0; i<foo.length; i++) {
+    		var y0=foo[i].y;
+    		var y1=population[0].ga(foo[i].x);
+	        if (isNaN(y1)) {
+	            foo[i].fitness=1e100;
+	        } else {
+	            foo[i].fitness=(y1-y0)*(y1-y0);
+	        }
+        	result+="    "+foo[i].x+", "+y1+(y1==foo[i].y?", // == // ":", // != // ")+foo[i].y+"\n"
     	}
         result+="];</pre><hr>";
         bestCodeField.prepend(result);
+        foo.sort(function(a,b){return b.fitness-a.fitness});
     }
 
     var t1=new Date().getTime();
@@ -287,12 +293,15 @@ function main() {
         if (codeBlocks[i].length>0) codeBlocks[i]+=";";
     }
     var data = $('#inputField').val().split("\n");
-	inp = new Array();
-	out = new Array();
+	foo = new Array();
     for(var i=0; i< data.length; i++) {
         var line=data[i].split(/[\s;,]+/g);
-        inp[i]=line[0]-0;
-        out[i]=line[line.length-1]-0;
+        var obj=new Object();
+        obj.seq=i;
+        obj.fitness=0;
+        obj.x=line[0]-0;
+        obj.y=line[line.length-1]-0;
+        foo[i]=obj;
     }
     bestCodeField.append("start<br>");
     generation=0;

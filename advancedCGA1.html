@@ -75,11 +75,10 @@ div.sheet {
 <script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
-<h2>The Blind Codemaker</h2>
-is searching for a function for your "Input Data".<br>
-<h2>Good luck! And stay patient!</h2>
+<h2>The Blind Codemaker</h2> is searching for a function for your "Input Data".<br>
+Good luck! And stay patient!
 <hr>
-<button onclick="main()" id="startField">Start / Restart</button>
+<button onclick="main()" id="startField">Start/Restart</button>
 <button id="stopField" onclick="stop()">Stop</button>
 <div id="generationField"></div>
 <hr>
@@ -88,7 +87,7 @@ is searching for a function for your "Input Data".<br>
     <input id="id-0" type="radio" class="sheet-switch" name="tabGroupA"/>
     <label class="sheet-label" for="id-0" >Input Data</label>
     <div class="sheet" >
-        <textarea id="inputField" cols="80" rows="35" wrap="soft">
+        <textarea id="inputField" cols="80" rows="35">
 1 2
 2 5
 3 10
@@ -101,34 +100,35 @@ is searching for a function for your "Input Data".<br>
     <input id="id-2" type="radio" class="sheet-switch" name="tabGroupA" />
     <label class="sheet-label" for="id-2" >Code Blocks</label>
     <div class="sheet" >
-        <textarea id="codeBlocksField" cols="80" rows="35" wrap="soft">
- ; ; ; ; ; ;
-a++; b++; c++; d++; e++; f++; g++; h++; 
-a--; b--; c--; d--; e--; f--; g--; h--; 
-a=a; b=a; c=a; d=a; e=a; f=a; g=a; h=a; 
-a=a; a=b; a=c; a=d; a=e; a=f; a=g; a=h; 
-a+=a; a+=b; a+=c; a+=d; a+=e; a+=f; a+=g; a+=h; 
-a-=a; a-=b; a-=c; a-=d; a-=e; a-=f; a-=g; a-=h; 
-a*=a; a*=b; a*=c; a*=d; a*=e; a*=f; a*=g; a*=h; 
-a/=a; a/=b; a/=c; a/=d; a/=e; a/=f; a/=g; a/=h; 
-a%=a; a%=b; a%=c; a%=d; a%=e; a%=f; a%=g; a%=h; 
-a=Math.abs(a); a=Math.abs(b); a=Math.abs(c); a=Math.abs(d); a=Math.abs(e); a=Math.abs(f); a=Math.abs(g); a=Math.abs(h); 
-a=Math.acos(a); a=Math.acos(b); a=Math.acos(c); a=Math.acos(d); a=Math.acos(e); a=Math.acos(f); a=Math.acos(g); a=Math.acos(h); 
-a=Math.asin(a); a=Math.asin(b); a=Math.asin(c); a=Math.asin(d); a=Math.asin(e); a=Math.asin(f); a=Math.asin(g); a=Math.asin(h); 
-a=Math.atan(a); a=Math.atan(b); a=Math.atan(c); a=Math.atan(d); a=Math.atan(e); a=Math.atan(f); a=Math.atan(g); a=Math.atan(h); 
-a=Math.ceil(a); a=Math.ceil(b); a=Math.ceil(c); a=Math.ceil(d); a=Math.ceil(e); a=Math.ceil(f); a=Math.ceil(g); a=Math.ceil(h); 
-a=Math.cos(a); a=Math.cos(b); a=Math.cos(c); a=Math.cos(d); a=Math.cos(e); a=Math.cos(f); a=Math.cos(g); a=Math.cos(h); 
-a=Math.exp(a); a=Math.exp(b); a=Math.exp(c); a=Math.exp(d); a=Math.exp(e); a=Math.exp(f); a=Math.exp(g); a=Math.exp(h); 
-a=Math.floor(a); a=Math.floor(b); a=Math.floor(c); a=Math.floor(d); a=Math.floor(e); a=Math.floor(f); a=Math.floor(g); a=Math.floor(h); 
-a=Math.log(a); a=Math.log(b); a=Math.log(c); a=Math.log(d); a=Math.log(e); a=Math.log(f); a=Math.log(g); a=Math.log(h); 
-a=Math.max(a,a); a=Math.max(a,b); a=Math.max(a,c); a=Math.max(a,d); a=Math.max(a,e); a=Math.max(a,f); a=Math.max(a,g); a=Math.max(a,h); 
-a=Math.min(a,a); a=Math.min(a,b); a=Math.min(a,c); a=Math.min(a,d); a=Math.min(a,e); a=Math.min(a,f); a=Math.min(a,g); a=Math.min(a,h); 
-a=Math.pow(a,a); a=Math.pow(a,b); a=Math.pow(a,c); a=Math.pow(a,d); a=Math.pow(a,e); a=Math.pow(a,f); a=Math.pow(a,g); a=Math.pow(a,h); 
-a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); a=Math.random(); 
-a=Math.round(a); a=Math.round(b); a=Math.round(c); a=Math.round(d); a=Math.round(e); a=Math.round(f); a=Math.round(g); a=Math.round(h); 
-a=Math.sin(a); a=Math.sin(b); a=Math.sin(c); a=Math.sin(d); a=Math.sin(e); a=Math.sin(f); a=Math.sin(g); a=Math.sin(h); 
-a=Math.sqrt(a); a=Math.sqrt(b); a=Math.sqrt(c); a=Math.sqrt(d); a=Math.sqrt(e); a=Math.sqrt(f); a=Math.sqrt(g); a=Math.sqrt(h); 
-a=Math.tan(a); a=Math.tan(b); a=Math.tan(c); a=Math.tan(d); a=Math.tan(e); a=Math.tan(f); a=Math.tan(g); a=Math.tan(h); 
+        <textarea id="codeBlocksField" cols="80" rows="35">
+var {0}; 
+var {0}=0; 
+var {0}=1; 
+var {0}={1}+{2}; 
+var {0}={1}+1; 
+var {0}={1}-{2}; 
+var {0}={1}-1; 
+var {0}={1}*{2}; 
+var {0}={1}/{2}; 
+var {0}={1}%{2}; 
+var {0}=Math.abs({1}); 
+var {0}=Math.acos({1}); 
+var {0}=Math.asin({1}); 
+var {0}=Math.atan({1}); 
+var {0}=Math.ceil({1}); 
+var {0}=Math.cos({1}); 
+var {0}=Math.exp({1}); 
+var {0}=Math.floor({1}); 
+var {0}=Math.log({1}); 
+var {0}=Math.max({1},{2}); 
+var {0}=Math.min({1},{2}); 
+var {0}=Math.pow({1},{2}); 
+var {0}=({1}>0)?{2}:{3}; 
+var {0}=Math.random(); 
+var {0}=Math.round({1}); 
+var {0}=Math.sin({1}); 
+var {0}=Math.sqrt({1}); 
+var {0}=Math.tan({1}); 
         </textarea>
     </div>
   </div>
@@ -144,9 +144,9 @@ a=Math.tan(a); a=Math.tan(b); a=Math.tan(c); a=Math.tan(d); a=Math.tan(e); a=Mat
 var generationField = $('#generationField');
 var bestCodeField = $('#bestCodeField');
 
-var mutationRate=0.7;
-var crossoverRate=0.2;
-var codeSize=50;
+var mutationRate=0.9;
+var crossoverRate=0;
+var codeSize=25;
 var populationSize=100;
 var generation=0;
 var individual=0;;
@@ -156,7 +156,7 @@ var run=true;
 
 var inp = new Array();
 var out = new Array();
-var codeBlocks = new Array();
+var codeBlocks = [[1]];
 var population = new Array();
 var ga;
 
@@ -164,24 +164,37 @@ function rand(v) {
   return Math.floor(v*Math.random());
 }
 
+function format(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined' ? args[number] : match ;
+    });
+}
+  
 function initCode() {
     var code = {};
     code.list=new Array();
     for (var i=0; i<codeSize; i++) {
-        code.list[i]=codeBlocks[rand(codeBlocks.length)];
+        code.list[i]=rand(100000);
     }
     return code;
 }
 
+function defFooGA(code) {
+    code.foo = "ga = function(x) {\n    ";
+    for (var i=0; i<code.list.length; i++) {
+        code.foo+=codeBlocks[i][code.list[i]%codeBlocks[i].length];
+    }
+    code.foo+="return y\n}";
+    eval(code.foo);
+}
+
 function calcFitness(code) {
     var fitness=0;
-    code.foo = "code.ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;b=x;"
-    	+code.list.join('')
-    	+"return a\n}";
-    eval(code.foo);
+    defFooGA(code);
     for( var i=0; i< inp.length; i++) {
         var y0=out[i];
-        var y1=code.ga(inp[i]);
+        var y1=ga(inp[i]);
         if (isNaN(y1)) {
             fitness+=1e100;
         } else {
@@ -194,11 +207,12 @@ function calcFitness(code) {
         fitness+=1;
     }
     code.fitness=fitness;
+    return fitness;
 }
 
-function mutate(target) {
-    var a=rand(target.list.length);
-    target.list[a]=codeBlocks[rand(codeBlocks.length)];
+function mutate(idx) {
+    var a=rand(population[idx].list.length);
+    population[idx].list[a]=rand(100000);
 }
 
 function crossover(idx, parent1) {
@@ -214,19 +228,15 @@ function crossover(idx, parent1) {
     }
 }
 
-function parsimonyToString(val) {
-	return (val>1?val-1:0)+" + "+(val>1?1:val);
-}
-
 function showInfo() {
     if (best>population[0].fitness) {
         best=population[0].fitness;
-        calcFitness(population[0]);
+        defFooGA(population[0]);
 	    var result="<pre>individual = "+population[0].id
-    		+"\nfitness = "+parsimonyToString(population[0].fitness)+"\n"
+    		+"\nfitness = "+(population[0].fitness-(population[0].fitness>1?1:population[0].fitness))+(population[0].fitness>1?" + 1":" + "+population[0].fitness)+"\n"
     		+population[0].foo.replace(/;/g,";\n    ")+";\n\nresult = [\n";
     	for(var i=0; i<out.length; i++) {
-    		var y1=population[0].ga(inp[i]);
+    		var y1=ga(inp[i]);
         	result+="    "+inp[i]+", "+y1+(y1==out[i]?", // == // ":", // != // ")+out[i]+"\n"
     	}
         result+="];</pre><hr>";
@@ -237,8 +247,8 @@ function showInfo() {
     generationField.text("generations = "+generation);
     generationField.append("<br>individuals = "+individual);
     generationField.append("<br>individuals/sec = "+1000*generation*population.length/(t1-timeStamp));
-    generationField.append("<br>bestFitness = "+parsimonyToString(best));
-    generationField.append("<br>currentFitness = "+parsimonyToString(population[0].fitness));
+    generationField.append("<br>bestFitness = "+(best>1?best-1:0)+" + "+(best>1?1:best));
+    generationField.append("<br>currentFitness = "+(population[0].fitness>1?population[0].fitness-1:0)+" + "+(population[0].fitness>1?1:population[0].fitness));
 }
 
 function loopThruGenerations() {
@@ -246,34 +256,30 @@ function loopThruGenerations() {
         // make the next generation.
         for(var i=population.length-1; i>=0; i--) {
         	var changed=0;
-    		var target=population[i];
     		var parent1=population[rand(i)];
 		    for( var j=0; j<parent1.list.length; j++) {
-	            target.list[j]=parent1.list[j];
+	            population[i].list[j]=parent1.list[j];
 		    }
+		    population[i].fitness=parent1.fitness;
+		    population[i].foo=parent1.foo;
 		    if (Math.random()<crossoverRate) {
 	            crossover(i, parent1);
 	            changed=1;
     		}
 		    if (Math.random()<mutationRate) {
-	            mutate(target);
+	            mutate(i);
 	            changed=1;
     		}
     		if (changed) {
-	            calcFitness(target);
-    			target.id=individual++;
-    		} else {
-			    target.fitness=parent1.fitness;
+	            calcFitness(population[i]);
+    			population[i].id=individual++;
     		}
         }
         population.sort(function(a,b){return a.fitness-b.fitness});
         generation++;
-	    if (best>population[0].fitness) {
-		    showInfo();
-	    }
     }
     showInfo();
-    if (population[0].fitness>0.152 && run) setTimeout( loopThruGenerations, 20);
+    if (population[0].fitness>0.05 && run) setTimeout( loopThruGenerations, 20);
 }
 
 function stop() {
@@ -282,10 +288,49 @@ function stop() {
 
 function main() {
     run=true;
-    codeBlocks = $('#codeBlocksField').val().split(/;\s*/g);
-    for(var i=0; i< codeBlocks.length; i++) {
-        if (codeBlocks[i].length>0) codeBlocks[i]+=";";
+    var codePattern = $('#codeBlocksField').val().split(/;\s*/g);
+    
+   
+    var set=[];
+    vars=["x"];
+    for (var i = 1; i < codeSize; i++) {
+    	vars[i]="n"+i;
     }
+   	vars[vars.length]="y";
+    for (var i = 1; i < codeSize+1; i++) {
+        codeBlocks[i-1]=[];
+    bestCodeField.append("[ ");
+        var0=vars[i];
+        for (var j=0; j<3; j++) {
+            var code = format("var {0}={1};", var0, rand(100000));
+            if (!(code in set)) {
+               	set[code]=1;
+                codeBlocks[i-1][codeBlocks[i-1].length]=code;
+	    bestCodeField.append(code);
+            }
+        }
+        for (var j=0; j<codePattern.length; j++) {
+           	if (codePattern[j].length>0) {
+                for (var a = Math.max(0, i-7); a < Math.max(1, i-1); a++) {
+                    for (var b = Math.max(0, i-7); b < Math.max(1, i-1); b++) {
+	                    for (var c = Math.max(0, i-7); c < Math.max(1, i-1); c++) {
+	                        var var1=vars[a];
+	                        var var2=vars[b];
+	                        var var3=vars[c];
+	                        var code = format(codePattern[j]+";", var0, var1, var2, var3);
+	                        if (!(code in set)) {
+	                        	set[code]=1;
+	                            codeBlocks[i-1][codeBlocks[i-1].length]=code;
+	    bestCodeField.append(code);
+	                        }
+	                    }
+                    }
+                }
+            }
+        }
+    bestCodeField.append("],<br>");
+    }
+    
     var data = $('#inputField').val().split("\n");
 	inp = new Array();
 	out = new Array();
