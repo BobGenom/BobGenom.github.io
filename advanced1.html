@@ -103,6 +103,7 @@ is searching for a function for your "Input Data".<br>
     <div class="sheet" >
         <textarea id="codeBlocksField" cols="80" rows="35" wrap="off" >
  ; ; ; ; ; ;
+a=C0; a=C1; a=C2; a=C3; a=C0; a=C1; a=C2; a=C3; 
 a++; b++; c++; d++; e++; f++; g++; h++; 
 a--; b--; c--; d--; e--; f--; g--; h--; 
 a=a; b=a; c=a; d=a; e=a; f=a; g=a; h=a; 
@@ -129,7 +130,7 @@ a=Math.round(a); a=Math.round(b); a=Math.round(c); a=Math.round(d); a=Math.round
 a=Math.sin(a); a=Math.sin(b); a=Math.sin(c); a=Math.sin(d); a=Math.sin(e); a=Math.sin(f); a=Math.sin(g); a=Math.sin(h); 
 a=Math.sqrt(a); a=Math.sqrt(b); a=Math.sqrt(c); a=Math.sqrt(d); a=Math.sqrt(e); a=Math.sqrt(f); a=Math.sqrt(g); a=Math.sqrt(h); 
 a=Math.tan(a); a=Math.tan(b); a=Math.tan(c); a=Math.tan(d); a=Math.tan(e); a=Math.tan(f); a=Math.tan(g); a=Math.tan(h); 
-        </textarea>
+      </textarea>
     </div>
   </div>
   <div class="sheet-container">
@@ -146,7 +147,8 @@ var bestCodeField = $('#bestCodeField');
 
 var mutationRate=0.7;
 var crossoverRate=0.2;
-var codeSize=50;
+var constSize=4;
+var codeSize=50+constSize;
 var populationSize=100;
 var generation=0;
 var individual=0;;
@@ -168,16 +170,22 @@ function initCode() {
     var code = {};
     code.list=new Array();
     for (var i=0; i<codeSize; i++) {
-        code.list[i]=codeBlocks[rand(codeBlocks.length)];
+        code.list[i]=Math.random();
     }
     return code;
 }
 
 function calcFitness(code) {
     var fitness=0;
-    code.foo = "code.ga = function(x) { var a=0, b=0, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;b=x;"
-    	+code.list.join('')
-    	+"return a\n}";
+    code.foo = "code.ga = function(x) { var a=0, b=x, c=0, d=0, e=0, f=0, g=0, h=0, i=0, j=0, k=0, l=0, m=0, n=0, o=0, p=0;";
+    code.foo+="var ";
+    for (var i=0; i<constSize; i++) {
+        code.foo+="C"+i+"="+Math.floor(65536*code.list[i])+(i<constSize-1?", ":";");
+    }
+    for (var i=constSize; i<codeSize; i++) {
+        code.foo+=codeBlocks[Math.floor(codeBlocks.length*code.list[i])];
+    }
+    code.foo+="return a\n}";
     eval(code.foo);
     for( var i=0; i< inp.length; i++) {
         var y0=out[i];
@@ -198,7 +206,7 @@ function calcFitness(code) {
 
 function mutate(target) {
     var a=rand(target.list.length);
-    target.list[a]=codeBlocks[rand(codeBlocks.length)];
+    target.list[a]=Math.random();
 }
 
 function crossover(idx, parent1) {
@@ -273,7 +281,7 @@ function loopThruGenerations() {
 	    }
     }
     showInfo();
-    if (population[0].fitness>0.152 && run) setTimeout( loopThruGenerations, 20);
+    if (population[0].fitness>0.194 && run) setTimeout( loopThruGenerations, 20);
 }
 
 function stop() {
@@ -284,7 +292,11 @@ function main() {
     run=true;
     codeBlocks = $('#codeBlocksField').val().split(/;\s*/g);
     for(var i=0; i< codeBlocks.length; i++) {
-        if (codeBlocks[i].length>0) codeBlocks[i]+=";";
+        if (/^\s*$/.test(codeBlocks[i])) {
+        	codeBlocks[i]="";
+        } else {
+        	codeBlocks[i]+=";";
+        }
     }
     var data = $('#inputField').val().split("\n");
 	inp = new Array();
