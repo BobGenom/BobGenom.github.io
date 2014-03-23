@@ -1,3 +1,6 @@
 BobGenom.github.io
 ==================
-web notebook2
+
+
+See a live demo of Genetic Programming with JavaScript here http://BobGenom.github.io
+
