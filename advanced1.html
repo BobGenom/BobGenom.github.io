@@ -77,7 +77,7 @@ div.sheet {
 <body>
 <h2>The Blind Codemaker</h2>
 is searching for a function for your "Input Data".<br>
-<h2>Good luck! And stay patient!</h2>
+<h2>Good luck! And stay patient! Or take a cup of tea! Or go into holiday!</h2>
 <hr>
 <button onclick="main()" id="startField">Start / Restart</button>
 <button id="stopField" onclick="stop()">Stop</button>
@@ -149,7 +149,7 @@ var mutationRate=0.7;
 var crossoverRate=0.2;
 var constSize=4;
 var codeSize=50+constSize;
-var populationSize=100;
+var populationSize=1000;
 var generation=0;
 var individual=0;;
 var best;
@@ -281,7 +281,7 @@ function loopThruGenerations() {
 	    }
     }
     showInfo();
-    if (population[0].fitness>0.194 && run) setTimeout( loopThruGenerations, 20);
+    if (population[0].fitness>0.19 && run) setTimeout( loopThruGenerations, 20);
 }
 
 function stop() {
