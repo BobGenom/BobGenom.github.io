@@ -149,7 +149,7 @@ var mutationRate=0.7;
 var crossoverRate=0.2;
 var constSize=4;
 var codeSize=50+constSize;
-var populationSize=1000;
+var populationSize=100;
 var generation=0;
 var individual=0;;
 var best;
@@ -250,7 +250,8 @@ function showInfo() {
 }
 
 function loopThruGenerations() {
-    for(var chunk=0; chunk<10; chunk++) {
+    var t0=new Date().getTime()+1000;
+    while(new Date().getTime() < t0) {
         // make the next generation.
         for(var i=population.length-1; i>=0; i--) {
         	var changed=0;
@@ -281,7 +282,7 @@ function loopThruGenerations() {
 	    }
     }
     showInfo();
-    if (population[0].fitness>0.19 && run) setTimeout( loopThruGenerations, 20);
+    if (population[0].fitness>0.19 && run) setTimeout( loopThruGenerations, 10);
 }
 
 function stop() {
@@ -302,7 +303,7 @@ function main() {
 	inp = new Array();
 	out = new Array();
     for(var i=0; i< data.length; i++) {
-        var line=data[i].split(/[\s;,]+/g);
+        var line=data[i].replace(/^\s+|\s+$/g, '').split(/[\s;,]+/g);
         inp[i]=line[0]-0;
         out[i]=line[line.length-1]-0;
     }
